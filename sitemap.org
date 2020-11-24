@@ -2,4 +2,5 @@
 
 - [[file:README.org][README]]
 - [[file:chapter1.org][chapter1]]
+- [[file:chapter2.org][chapter2]]
 - [[file:index.org][index]]

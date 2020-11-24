@@ -1,0 +1,191 @@
+* The AWK Language
+
+* The Input File countries
+
+#+begin_src sh
+cat countries
+#+end_src
+
+#+RESULTS:
+| USSR    | 8649 |  275 | Asia   |         |
+| Canada  | 3852 |   25 | North  | America |
+| China   | 3705 | 1032 | Asia   |         |
+| USA     | 3615 |  237 | North  | America |
+| Brazil  | 3286 |  134 | South  | America |
+| India   | 1267 |  746 | Asia   |         |
+| Mexico  |  762 |   78 | North  | America |
+| France  |  211 |   55 | Europe |         |
+| Japan   |  144 |  120 | Asia   |         |
+| Germany |   96 |   61 | Europe |         |
+| England |   94 |   56 | Europe |         |
+
+- Fisrt column: Name of a country
+- Second column: Area in thousands of square miles
+- Third column: Population in millions
+- Foruth column: Continent it is in
+
+* Program Format
+
+- Pattern-action statements and the statements within an action are
+  usually separated by newlines, but several statements may appear on
+  one line if they are separated by semicolons. A semicolon may be put
+  at the end of any statement.
+
+* Patterns
+
+todo: insert pic (page 23)
+
+** BEGIN and END
+
+- One common use of a BEGIN action is to change the default way that
+  input lines are split into fields. The field separator is controlled
+  by a built-in variable called ~FS~.
+- By default, fields are separated by blanks and/or tabs; this
+  behavior occurs when ~FS~ is set to a blank.
+- Setting FS to any character other than a blank makes that character
+  the field separator.
+
+** Expressions as Patterns
+
+- The string ~""~ which contains no characters, is called the /null/
+  string.
+
+todo: insert pic (page 25)
+
+- In a relational comparison, if both operands are numeric, a numeric
+  comparison is made; otherwise, any numeric operand is converted to a
+  string, and then the operands are compared as strings.
+
+** String-Mattching Patterns
+
+todo: insert pic (page 27)
+
+#+begin_src awk :in-file countries :exports both :results value verbatim
+/Asia/
+#+end_src
+
+#+RESULTS:
+: USSR 8649 275 Asia
+: China 3705 1032 Asia
+: India 1267 746 Asia
+: Japan 144 120 Asia
+
+#+begin_src awk :in-file countries :exports both :results value verbatim
+$4 ~ /Asia/
+#+end_src
+
+#+RESULTS:
+: USSR 8649 275 Asia
+: China 3705 1032 Asia
+: India 1267 746 Asia
+: Japan 144 120 Asia
+
+#+begin_src awk :in-file countries :exports both :results value verbatim
+$4 !~ /Asia/
+#+end_src
+
+#+RESULTS:
+: Canada 3852 25 North America
+: USA 3615 237 North America
+: Brazil 3286 134 South America
+: Mexico 762 78 North America
+: France 211 55 Europe
+: Germany 96 61 Europe
+: England 94 56 Europe
+
+Note that ~/Asia/~ is a shorthand for ~$0 ~ /Asia/~
+
+** Regular Expression
+
+- A regular expression is a notation for specifying and matching
+  strings.
+
+todo: insert pic (page 28)
+
+todo: insert pic (page 32)
+
+** Compound Patters
+
+#+begin_src awk :in-file countries :exports both :results value verbatim
+$4 == "Asia" || $4 == "Europe"
+#+end_src
+
+#+RESULTS:
+: USSR 8649 275 Asia
+: China 3705 1032 Asia
+: India 1267 746 Asia
+: France 211 55 Europe
+: Japan 144 120 Asia
+: Germany 96 61 Europe
+: England 94 56 Europe
+
+** Range patterns
+
+- A range pattern consists of two patterns separated by a comma, as in
+
+#+begin_example
+pat_1, pat_2
+#+end_example
+
+#+begin_src awk :in-file countries :exports both :results value verbatim
+/Europe/, /Asia/
+#+end_src
+
+#+RESULTS:
+: France 211 55 Europe
+: Japan 144 120 Asia
+: Germany 96 61 Europe
+: England 94 56 Europe
+
+- ~FNR~: is the line number just read from the current input
+  file. It's another built in variable.
+- ~FILENAME~: Builtin variable representing the filename.
+
+#+begin_src awk :in-file countries :exports both :results value verbatim
+FNR == 1, FNR == 5 { print FILENAME ": " $0 }
+#+end_src
+
+#+RESULTS:
+: countries: USSR 8649 275 Asia
+: countries: Canada 3852 25 North America
+: countries: China 3705 1032 Asia
+: countries: USA 3615 237 North America
+: countries: Brazil 3286 134 South America
+
+In the above output it prints from line number 1 to 5.
+
+** Summary of Patterns
+
+todo: insert pic (page 33)
+
+* Actions
+
+todo: insert pic (page 34)
+
+todo: insert pic (page 37)
+
+- Total population of Asian countries
+
+#+begin_src awk :in-file countries :exports both :results value verbatim
+  $4 == "Asia" { pop = pop + $3; n = n + 1}
+  END          { print "Total population of the", n,
+                       "Asian countries is", pop, "million."
+               }
+#+end_src
+
+#+RESULTS:
+: Total population of the 4 Asian countries is 2173 million.
+
+- Find largest population:
+
+#+begin_src awk :in-file countries :exports both :results value verbatim
+$3 > maxpop { maxpop = $3; country = $1 }
+END         { print "country with larget population:", country, maxpop }
+#+end_src
+
+#+RESULTS:
+: country with larget population: China 1032
+
+todo: insert pic (page 39)
+
+Start from page 39
