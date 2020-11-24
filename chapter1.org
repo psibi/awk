@@ -1,0 +1,469 @@
+* Getting started
+
+- Awk is a convenient and expressive programming language that can be
+  applied to a wide variety of computing and data-manipulation tasks.
+- *emp.data* will be used to explore further
+
+#+begin_src sh :exports both
+bat emp.data
+#+end_src
+
+#+RESULTS:
+| Beth  |  4.0 |  0 |
+| Dan   | 3.75 |  0 |
+| Kathy |  4.0 | 10 |
+| Mark  |  5.0 | 20 |
+| Mary  |  5.5 | 22 |
+| Susie | 4.25 | 18 |
+
+ - First column: Employee name
+ - Second column: Pay rate in dollars per hour
+ - Third column: Number of hours worked
+
+** Employees who worked more than zero hours
+
+#+begin_src awk :in-file emp.data :exports both
+$3 > 0 { print $1, $2 * $3} 
+#+end_src
+
+#+RESULTS:
+| Kathy |   40 |
+| Mark  |  100 |
+| Mary  |  121 |
+| Susie | 76.5 |
+
+Note that the above command in a CLI will be invoked like this:
+
+#+begin_example sh
+$ awk '$3 > 0 { print $1, $2 * $3}' emp.data
+#+end_example
+
+- But in this document we will just concentrate on it's language. The
+  part inside the quotes is the complete awk program. It consists of a
+  single *pattern action statement*.
+- The pattern ~$3 > 0$~ matches every input line in which the third
+  column or field is greater than zero and executes the corresponding
+  action.
+
+** Employees who didn't work
+
+#+begin_src awk :in-file emp.data :exports both
+$3 == 0 { print $1 }
+#+end_src
+
+#+RESULTS:
+| Beth |
+| Dan  |
+
+* The Structure of an AWK Program
+
+- Each awk program is a sequence of one or more pattern action
+  statements:
+
+#+begin_example
+pattern { action }
+pattern { action }
+...
+#+end_example
+
+- The basic operation of awk is to scan a sequence of input lines one
+  after another, searching for lines that are matched by any of the
+  patterns in the program. The precise meaning of the word "match"
+  depends on the pattern.
+- Every input line is tested against each of the patterns in turn. For
+  each pattern that matches, the corresponding action is performed.
+- If the pattern has no action, then each line that the pattern
+  matches is printed:
+
+#+begin_src awk :in-file emp.data :exports both
+$3 == 0
+#+end_src
+
+#+RESULTS:
+| Beth |  4.0 | 0 |
+| Dan  | 3.75 | 0 |
+
+- If there is an action with no pattern, then for each line the action
+  is performed:
+
+#+begin_src awk :in-file emp.data :exports both
+{ print $1 }
+#+end_src
+
+#+RESULTS:
+| Beth  |
+| Dan   |
+| Kathy |
+| Mark  |
+| Mary  |
+| Susie |
+
+* Running an AWK Program
+
+Several ways:
+
+#+begin_src 
+$ aws 'program' files
+$ aws '$3 == 0 { print $1}' file1 file2
+#+end_src
+
+Or you can supply input via stdin:
+
+#+begin_src 
+$ awk 'program'
+#+end_src
+
+It accepts input till the end-of-file signal. (Ctrl-D on Unix). The
+stdin way of doing will be quite handy to experiment. If your awk
+program is long, you can pass the program explicitly:
+
+#+begin_src 
+$ awk -f progfile input files
+#+end_src
+
+* Errors
+
+Awk will report an error if there is an error in the code
+(duh!). Let's mistype a brace:
+
+#+begin_src 
+$ awk '$3 == 0 [ print $1 }' emp.dat
+awk: line 1: syntax error at or near [
+awk: line 1: extra '}'
+#+end_src
+
+* Simple output
+
+- There are only two types of data in awk: numbers and string of
+  characters.
+- Awk reads its input one line at a time and splits each line into
+  fields, where, by default, a field is a sequence of characters that
+  doesn't contain any blanks or tabs. The first field in the current
+  input line is called $1, the second $2, and so forth. The entire
+  line is called $0. The number of fields can vary from line to line.
+
+** Printing Every line
+
+#+begin_src awk :in-file emp.data :exports both
+{ print }
+#+end_src
+
+#+RESULTS:
+| Beth  |  4.0 |  0 |
+| Dan   | 3.75 |  0 |
+| Kathy |  4.0 | 10 |
+| Mark  |  5.0 | 20 |
+| Mary  |  5.5 | 22 |
+| Susie | 4.25 | 18 |
+
+Or even this:
+
+#+begin_src awk :in-file emp.data :exports both
+{ print $0 }
+#+end_src
+
+#+RESULTS:
+| Beth  |  4.0 |  0 |
+| Dan   | 3.75 |  0 |
+| Kathy |  4.0 | 10 |
+| Mark  |  5.0 | 20 |
+| Mary  |  5.5 | 22 |
+| Susie | 4.25 | 18 |
+
+
+** Printing Certain Fields
+
+#+begin_src awk :in-file emp.data :exports both
+{ print $1, $3 }
+#+end_src
+
+#+RESULTS:
+| Beth  |  0 |
+| Dan   |  0 |
+| Kathy | 10 |
+| Mark  | 20 |
+| Mary  | 22 |
+| Susie | 18 |
+
+- Expressions separated by a comma in a print statement are, by
+  default, separated by a single blank when they are printed.
+
+** NF, the Number of Fields
+
+- Awk counts the number of fields in the current input line and stores
+  the count in a built-in variable called ~NF~.
+- Any expression can be used after ~$~ to denote a field number; the
+  expression is evaluated and its numberic value is used as the field
+  number.
+
+#+begin_src awk :in-file emp.data :exports both
+{ print NF, $1, $NF }
+#+end_src
+
+#+RESULTS:
+| 3 | Beth  |  0 |
+| 3 | Dan   |  0 |
+| 3 | Kathy | 10 |
+| 3 | Mark  | 20 |
+| 3 | Mary  | 22 |
+| 3 | Susie | 18 |
+
+** Computing and Printing
+
+#+begin_src awk :in-file emp.data :exports both
+{ print $1, $2 * $3 }
+#+end_src
+
+#+RESULTS:
+| Beth  |    0 |
+| Dan   |    0 |
+| Kathy |   40 |
+| Mark  |  100 |
+| Mary  |  121 |
+| Susie | 76.5 |
+
+** Printing Line Numbers
+
+- Awk provides another built-variable, called *NR*, that counts the
+  number of lines read so far.
+
+#+begin_src awk :in-file emp.data :exports both
+{ print NR, $0 }
+#+end_src
+
+#+RESULTS:
+| 1 | Beth  |  4.0 |  0 |
+| 2 | Dan   | 3.75 |  0 |
+| 3 | Kathy |  4.0 | 10 |
+| 4 | Mark  |  5.0 | 20 |
+| 5 | Mary  |  5.5 | 22 |
+| 6 | Susie | 4.25 | 18 |
+
+** Printing Text in the Output
+
+#+begin_src awk :in-file emp.data :exports both :results value verbatim
+{ print "total pay for", $1, "is", $2 * $3 }
+#+end_src
+
+#+RESULTS:
+: total pay for Beth is 0
+: total pay for Dan is 0
+: total pay for Kathy is 40
+: total pay for Mark is 100
+: total pay for Mary is 121
+: total pay for Susie is 76.5
+
+* Fancier Output
+
+- The *print* statement is meant for quick and easy output.
+- To format the output exactly the way you want it, you may have to
+  use the *printf* statement.
+
+** Lining up Fields
+
+#+begin_example
+printf(format, value_1, value_2, ... , value_n)
+#+end_example
+
+- format: is a string that contains text to be printed verbatim,
+  interspered with specifications of how each of the values is to be
+  printed.
+- A specification is a ~%~ followed by a few characters that control
+  the format of a value.
+- Thus, there must be as many ~%~ specifications in format as values to
+  be printed.
+
+#+begin_src awk :in-file emp.data :exports both :results value verbatim
+{ printf("total pay for %s is $%.2f\n", $1, $2 * $3) }
+#+end_src
+
+#+RESULTS:
+: total pay for Beth is $0.00
+: total pay for Dan is $0.00
+: total pay for Kathy is $40.00
+: total pay for Mark is $100.00
+: total pay for Mary is $121.00
+: total pay for Susie is $76.50
+
+- ~%s~: Specifices that the first value is a string of characters.
+- ~%.2f~: Specifices that the second value (~$2*$3~) is a number with
+  2 digits after decimal point.
+- ~\n~: Newline
+
+- With printf, no blanks or newlines are produced automatically; you
+  must create them yourself.
+
+#+begin_src awk :in-file emp.data :exports both :results value verbatim
+{ printf("%-8s $%6.2f\n",$1, $2 * $3)}
+#+end_src
+
+#+RESULTS:
+: Beth     $  0.00
+: Dan      $  0.00
+: Kathy    $ 40.00
+: Mark     $100.00
+: Mary     $121.00
+: Susie    $ 76.50
+
+- ~%-8s~ Prints a name as a string of characters left justified in a
+  field 8 characters wide.
+- ~%6.2f~ prints pay as a number with two digits after the decimal
+  point, in a field 6 characters wide.
+
+** Sorting the Output
+
+#+begin_src sh :exports both
+awk '{printf("%6.2f %s\n", $2 * $3, $0)}' emp.data | sort
+#+end_src
+
+#+RESULTS:
+|   0.0 | Beth  |  4.0 |  0 |
+|   0.0 | Dan   | 3.75 |  0 |
+| 100.0 | Mark  |  5.0 | 20 |
+| 121.0 | Mary  |  5.5 | 22 |
+|  40.0 | Kathy |  4.0 | 10 |
+|  76.5 | Susie | 4.25 | 18 |
+
+* Selection
+
+- Awk patterns are good for selecting interesting lines from the input
+  for further processing.
+- Since a pattern without an action prints all lines matching the
+  pattern, many awk programs consist of nothing more than a single
+  pattern.
+
+
+** Selection by Comparison
+
+- Employees who earn more than or equal to $5 per hour:
+
+#+begin_src awk :in-file emp.data :exports both
+$2 >= 5
+#+end_src
+
+#+RESULTS:
+| Mark | 5.0 | 20 |
+| Mary | 5.5 | 22 |
+
+** Selection by Computation
+
+- Employees whose total pay exceeds $50
+
+#+begin_src awk :in-file emp.data :exports both :results value verbatim
+$2 * $3 > 50 { printf("$%.2f for %s\n", $2 * $3, $1)}
+#+end_src
+
+#+RESULTS:
+: $100.00 for Mark
+: $121.00 for Mary
+: $76.50 for Susie
+
+** Selection by Text Content
+
+#+begin_src awk :in-file emp.data :exports both
+$1 == "Susie"
+#+end_src
+
+#+RESULTS:
+: Susie 4.25   18
+
+- The text pattern can also be regular expressions
+
+** Combinations of Patterns
+
+- Logical operators can be used: ~&&, ||~ and ~!~
+
+#+begin_src awk :in-file emp.data :exports both
+$2 >= 4
+$3 >= 20
+#+end_src
+
+#+RESULTS:
+| Beth  |  4.0 |  0 |
+| Kathy |  4.0 | 10 |
+| Mark  |  5.0 | 20 |
+| Mark  |  5.0 | 20 |
+| Mary  |  5.5 | 22 |
+| Mary  |  5.5 | 22 |
+| Susie | 4.25 | 18 |
+
+#+begin_src awk :in-file emp.data :exports both
+!($2 < 4 && $3 < 20)
+#+end_src
+
+#+RESULTS:
+| Beth  |  4.0 |  0 |
+| Kathy |  4.0 | 10 |
+| Mark  |  5.0 | 20 |
+| Mary  |  5.5 | 22 |
+| Susie | 4.25 | 18 |
+
+** Data validation
+
+- Awk is an excellent tool for checking that data has reasonable
+  values and is in the right format, a task that is often called data
+  validation.
+- Data validation is essentially negative: instead of printing lines
+  with desirable properties, one prints lines that are suspicious.
+
+#+begin_src awk :in-file emp.data :exports both
+NF != 3 { print $0, "number of files is not equal to 3"}
+#+end_src
+
+#+RESULTS:
+
+If there are no errors, there's no output.
+
+#+begin_src awk :in-file emp.data :exports both
+$2 > 10 { print $0, "rate exceeds $10 per hour"}
+#+end_src
+
+** BEGIN and END
+
+- The special pattern *BEGIN* matches before the first line of the first
+  input ·file is read, and *END* matches after the last line of the last
+  file has been processed.
+
+#+begin_src awk :in-file emp.data :exports both :results value verbatim
+BEGIN { print "NAME  RATE   HOURS"; print ""}
+      { print }
+#+end_src
+
+#+RESULTS:
+: NAME  RATE   HOURS
+: 
+: Beth  4.00   0
+: Dan   3.75   0
+: Kathy 4.00   10
+: Mark  5.00   20
+: Mary  5.50   22
+: Susie 4.25   18
+
+* Computing with AWK
+
+- An action is a sequence of statements separated by newlines or
+  semicolons.
+- In awk, user-created variables are not declared.
+
+#+begin_src awk :in-file emp.data :exports both :results value verbatim
+$3 > 15 { emp = emp + 1}
+END     { print emp, "employees worked more than 15 hours" }
+#+end_src
+
+#+RESULTS:
+: 3 employees worked more than 15 hours
+
+- Awk variables used as numbers begin life with the value of *0*, so
+  we didn't need to initialize ~emp~ above.
+
+** Computing Sums and Averages
+
+- Computing number of employees
+
+#+begin_src awk :in-file emp.data :exports both :results value verbatim
+END { print NR, "employees" }
+#+end_src
+
+#+RESULTS:
+: 6 employees
+

@@ -1,0 +1,17 @@
+* The AWK Programming Language
+
+This contains my notes for the book *The AWK Programming Language* by
+Alfred V. Aho, Brian W. Kernighan and Peter J. Weinberger. The book is
+freely available in [[https://archive.org/details/pdfy-MgN0H1joIoDVoIC7][archive.org]].
+
+** Chapters
+
+** Publishing
+
+- Go to [[file:index.org][index.org]] file.
+- Invoke ~org-publish~
+
+** Contributing
+
+Contributions welcome. You would have to edit the [[https://en.wikipedia.org/wiki/Org-mode][org files]] in the
+[[https://github.com/psibi/prometheus][repository]] and send a PR!
