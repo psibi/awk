@@ -15,7 +15,7 @@ freely available in [[https://archive.org/details/pdfy-MgN0H1joIoDVoIC7][archive
 - Create symbolic of it in the main directory:
 
 #+begin_src sh
-$ ln -s $PWD/docs/assets/ $PWD/assets
+ln -s $PWD/docs/assets/ $PWD/assets
 #+end_src
 
 ** Soure code highlighting
@@ -23,7 +23,7 @@ $ ln -s $PWD/docs/assets/ $PWD/assets
 Generate [[file:docs/main.css][main.css]] file:
 
 #+begin_src sh
-$ pygmentize -S emacs -f html > docs/main.css
+pygmentize -S emacs -f html > docs/main.css
 #+end_src
 
 Then use a forked version of [[https://github.com/psibi/ox-twbs][ox-twbs]] to generate syntax highlighted
