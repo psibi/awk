@@ -37,4 +37,4 @@ html.
 ** Contributing
 
 Contributions welcome. You would have to edit the [[https://en.wikipedia.org/wiki/Org-mode][org files]] in the
-[[https://github.com/psibi/prometheus][repository]] and send a PR!
+[[https://github.com/psibi/awk][repository]] and send a PR!
