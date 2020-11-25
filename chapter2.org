@@ -188,4 +188,337 @@ END         { print "country with larget population:", country, maxpop }
 
 todo: insert pic (page 39)
 
-Start from page 39
+** Strings as Regular Expressions
+
+#+begin_src awk :in-file countries :exports both :results value verbatim
+BEGIN { digits = "^[0-9]+$"}
+$2 ~ digits
+#+end_src
+
+#+RESULTS:
+#+begin_example
+USSR 8649 275 Asia
+Canada 3852 25 North America
+China 3705 1032 Asia
+USA 3615 237 North America
+Brazil 3286 134 South America
+India 1267 746 Asia
+Mexico 762 78 North America
+France 211 55 Europe
+Japan 144 120 Asia
+Germany 96 61 Europe
+England 94 56 Europe
+#+end_example
+
+** Built-In String Functions
+
+todo: insert pic (page 42)
+
+#+begin_src awk :in-file countries :exports both :results value verbatim
+{ gsub(/USA/, "United States"); print}
+#+end_src
+
+#+RESULTS:
+#+begin_example
+USSR 8649 275 Asia
+Canada 3852 25 North America
+China 3705 1032 Asia
+United States 3615 237 North America
+Brazil 3286 134 South America
+India 1267 746 Asia
+Mexico 762 78 North America
+France 211 55 Europe
+Japan 144 120 Asia
+Germany 96 61 Europe
+England 94 56 Europe
+#+end_example
+
+#+begin_src awk :in-file countries :exports both :results value verbatim
+{ gsub(/Asia/, "Asiana", $4); print $0}
+#+end_src
+
+#+RESULTS:
+#+begin_example
+USSR 8649 275 Asiana
+Canada 3852 25 North America
+China 3705 1032 Asiana
+USA 3615 237 North America
+Brazil 3286 134 South America
+India 1267 746 Asiana
+Mexico 762 78 North America
+France 211 55 Europe
+Japan 144 120 Asiana
+Germany 96 61 Europe
+England 94 56 Europe
+#+end_example
+
+- The function ~substr(s,p)~ returns the fuffix of ~s~ that begins at
+  position ~p~. If ~substr(s,p,n)~ is used, only the first ~n~
+  characters of the suffix are returned.
+
+#+begin_src awk :in-file countries :exports both :results value verbatim
+{ $1 = substr($1, 1, 3); print $0}
+#+end_src
+
+#+RESULTS:
+#+begin_example
+USS 8649 275 Asia
+Can 3852 25 North America
+Chi 3705 1032 Asia
+USA 3615 237 North America
+Bra 3286 134 South America
+Ind 1267 746 Asia
+Mex 762 78 North America
+Fra 211 55 Europe
+Jap 144 120 Asia
+Ger 96 61 Europe
+Eng 94 56 Europe
+#+end_example
+
+#+begin_src awk :in-file countries :exports both :results value verbatim
+      { s = s substr($1, 1, 3) " "}
+  END { print s }
+#+end_src
+
+#+RESULTS:
+: USS Can Chi USA Bra Ind Mex Fra Jap Ger Eng 
+
+** Number or String?
+
+- The value of an expression may be automatically converted from a
+  number to a string or vice versa, depending on what operation is
+  applied to it.
+- In an arithmetic expression like ~pop + $3~, the operands ~pop~ and
+  ~$3~ must be numeric, so their values will be forced or coerced to
+  numbers if they are not already.
+- In a string expression like ~$1 $2~ the operands ~$1~ and ~$2~ must
+  be strings to be concatenated, so they will be coerced to strings if
+  necessary.
+- There are two idioms for coercing an expression of one type to the
+  other:
+  - ~number ""~ concatenate a null string to ~number~ to coerce it to a string
+  - ~string + 0~ add zero to ~string~ to coerce it to a number
+
+todo: insert pic (page 46)
+
+** Control Flow Statements
+
+todo: insert pic (page 48)
+
+** Empty Statement
+
+- Semicolon denotes the empty statement.
+
+** Arrays
+
+- Awk provides one-dimensional arrays for storing strings and numbrs.
+- Printing file in reverse:
+
+#+begin_src awk :in-file countries :exports both :results value verbatim
+      { x[NR] = $0 }
+  END { for(i=NR;i > 0;i--) print x[i]}
+#+end_src
+
+#+RESULTS:
+#+begin_example
+England 94 56 Europe
+Germany 96 61 Europe
+Japan 144 120 Asia
+France 211 55 Europe
+Mexico 762 78 North America
+India 1267 746 Asia
+Brazil 3286 134 South America
+USA 3615 237 North America
+China 3705 1032 Asia
+Canada 3852 25 North America
+USSR 8649 275 Asia
+#+end_example
+
+- Finding asian and european population:
+
+#+begin_src awk :in-file countries :exports both :results value verbatim
+  /Asia/   { pop["Asia"] += $3 }
+  /Europe/ { pop["Europe"] += $3 }
+  END      { print "Asian population is", pop["Asia"], "million."
+             print "European population is", pop["Europe"], "million."
+           }
+#+end_src
+
+#+RESULTS:
+: Asian population is 2173 million.
+: European population is 172 million.
+
+** Delete startement
+
+- An array element may be deleted with ~delete array[subscript]~
+
+* User-Defined Functions
+
+#+begin_src 
+function name(parameter-list) {
+  statements
+}
+#+end_src
+
+- Example code:
+
+#+begin_src awk :in-file countries :exports both :results value verbatim
+  { print max($2,$3) }
+
+  function max(a, b) {
+      return a > b ? a : b
+  }
+#+end_src
+
+#+RESULTS:
+#+begin_example
+8649
+3852
+3705
+3615
+3286
+1267
+762
+211
+144
+96
+94
+#+end_example
+
+* Output
+
+- ~print~ and ~printf~ statements generate output.
+
+todo: insert pic (page 55)
+
+** Output Separators
+
+- ~OFS~: Built-in variable representing output field separator.
+- ~ORS~: Built-in variable representing output record separator.
+
+#+begin_src awk :in-file countries :exports both :results value verbatim
+  BEGIN { OFS = ":"; ORS = "|"}
+        { print $1, $2 }
+#+end_src
+
+#+RESULTS:
+: USSR:8649|Canada:3852|China:3705|USA:3615|Brazil:3286|India:1267|Mexico:762|France:211|Japan:144|Germany:96|England:94|
+
+** printf
+
+todo: insert pic (page 57)
+
+** Output into Files
+
+- The redirection operators ~>~ and ~>>~ are used to put outputs into
+  files instead of the standard output.
+- Example program to write to two files based on smaller and big
+  population:
+
+#+begin_src awk :in-file countries :exports both :results value verbatim
+$3 > 100 { print $1, $3 >"bigpop"}
+$3 <= 100 { print $1, $3 >"smallpop"}
+#+end_src
+
+#+begin_src sh :exports both
+echo bigpop
+bat bigpop
+echo "---\n smallpop"
+bat smallpop
+#+end_src
+
+#+RESULTS:
+| bigpop   |      |
+| USSR     |  275 |
+| China    | 1032 |
+| USA      |  237 |
+| Brazil   |  134 |
+| India    |  746 |
+| Japan    |  120 |
+| ---      |      |
+| smallpop |      |
+| Canada   |   25 |
+| Mexico   |   78 |
+| France   |   55 |
+| Germany  |   61 |
+| England  |   56 |
+
+- If ~>>~ is used, the file is not cleared; output is appended after
+  the original contents.
+
+** Output into Pipes
+
+- Let's sort continents by population:
+
+#+begin_src awk :in-file countries :exports both :results value verbatim
+      { pop[$4] += $3 }
+  END { for (c in pop)
+          printf("%-7s %d\n", c, pop[c]) | "sort -r -n -k2,2"
+      }
+#+end_src
+
+#+RESULTS:
+: Asia    2173
+: North   340
+: Europe  172
+: South   134
+
+** Closing Files and pipes
+
+- The statement ~close(expr)~ closes a file or pipe denoted by ~expr~;
+  the string value of ~expr~ must be the same as the string used to
+  create the file or pipe in the first place.
+- Thus, ~close("sort -r -n k2,2")~ closes the sort pipe opened above.
+- ~close~ is necessary if you intend to write a file, then read it
+  later in the same program.
+
+* Input
+
+** Input Separators
+
+- The default built-in variable ~FS~ is ~" "~ a single blank. When
+  ~FS~ has this value, input fields are separated by blanks and/or
+  tabs. Note that the leading blanks and tabs are discarded. When ~FS~
+  has other value, the leading blanks and tabs are not discarded.
+
+** Multiline Records
+
+- By default records are separated by newlines. The terms "line" and
+  "record" are normally synonymous.
+- ~RS~: Built in record separator variable. Default value: ~"\n"~
+
+** The getline Function
+
+- Can be used to read input from the current input or from a file or
+  pipe.
+
+todo: insert pic (62)
+
+** Command Line Arguments
+
+#+begin_src 
+$ awk -f progfile a v=1 b
+#+end_src
+
+- ~ARGC~ has the value 4.
+- ~ARGV[1]~ contains a
+- ~ARGV[2]~ contains v=1
+- ~ARGV[3]~ contains b
+
+* Interaction with Other Programs
+
+** The system Function
+
+- The built-in function system(expression) executes the command given
+  by the string value of expression. The value returned by system is
+  the status returned by the command executed.
+
+#+begin_src awk :in-file countries :exports both :results value verbatim
+/Asia/ { system("echo " $0)}
+#+end_src
+
+#+RESULTS:
+: USSR 8649 275 Asia
+: China 3705 1032 Asia
+: India 1267 746 Asia
+: Japan 144 120 Asia
