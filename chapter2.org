@@ -2,7 +2,7 @@
 
 * The Input File countries
 
-#+begin_src sh
+#+begin_src sh :exports both
 cat countries
 #+end_src
 
@@ -33,7 +33,7 @@ cat countries
 
 * Patterns
 
-todo: insert pic (page 23)
+[[file:assets/patterns.png]]
 
 ** BEGIN and END
 
@@ -50,7 +50,7 @@ todo: insert pic (page 23)
 - The string ~""~ which contains no characters, is called the /null/
   string.
 
-todo: insert pic (page 25)
+[[file:assets/comparion_operators.png]]
 
 - In a relational comparison, if both operands are numeric, a numeric
   comparison is made; otherwise, any numeric operand is converted to a
@@ -58,7 +58,7 @@ todo: insert pic (page 25)
 
 ** String-Mattching Patterns
 
-todo: insert pic (page 27)
+[[file:assets/string_matching_patterns.png]]
 
 #+begin_src awk :in-file countries :exports both :results value verbatim
 /Asia/
@@ -100,9 +100,9 @@ Note that ~/Asia/~ is a shorthand for ~$0 ~ /Asia/~
 - A regular expression is a notation for specifying and matching
   strings.
 
-todo: insert pic (page 28)
+[[file:assets/re.png]]
 
-todo: insert pic (page 32)
+[[file:assets/regular_expressions.png]]
 
 ** Compound Patters
 
@@ -156,13 +156,13 @@ In the above output it prints from line number 1 to 5.
 
 ** Summary of Patterns
 
-todo: insert pic (page 33)
+[[file:assets/patterns2.png]]
 
 * Actions
 
-todo: insert pic (page 34)
+[[file:assets/actions.png]]
 
-todo: insert pic (page 37)
+[[file:assets/expressions.png]]
 
 - Total population of Asian countries
 
@@ -186,7 +186,7 @@ END         { print "country with larget population:", country, maxpop }
 #+RESULTS:
 : country with larget population: China 1032
 
-todo: insert pic (page 39)
+[[file:assets/builtin_arith.png]]
 
 ** Strings as Regular Expressions
 
@@ -212,7 +212,7 @@ England 94 56 Europe
 
 ** Built-In String Functions
 
-todo: insert pic (page 42)
+[[file:assets/builtin_string.png]]
 
 #+begin_src awk :in-file countries :exports both :results value verbatim
 { gsub(/USA/, "United States"); print}
@@ -299,11 +299,11 @@ Eng 94 56 Europe
   - ~number ""~ concatenate a null string to ~number~ to coerce it to a string
   - ~string + 0~ add zero to ~string~ to coerce it to a number
 
-todo: insert pic (page 46)
+[[file:assets/expression_operators.png]]
 
 ** Control Flow Statements
 
-todo: insert pic (page 48)
+[[file:assets/control_flow.png]]
 
 ** Empty Statement
 
@@ -389,7 +389,7 @@ function name(parameter-list) {
 
 - ~print~ and ~printf~ statements generate output.
 
-todo: insert pic (page 55)
+[[file:assets/output.png]]
 
 ** Output Separators
 
@@ -406,7 +406,7 @@ todo: insert pic (page 55)
 
 ** printf
 
-todo: insert pic (page 57)
+[[file:assets/printf.png]]
 
 ** Output into Files
 
@@ -492,7 +492,7 @@ bat smallpop
 - Can be used to read input from the current input or from a file or
   pipe.
 
-todo: insert pic (62)
+[[file:assets/getline.png]]
 
 ** Command Line Arguments
 
@@ -522,3 +522,7 @@ $ awk -f progfile a v=1 b
 : China 3705 1032 Asia
 : India 1267 746 Asia
 : Japan 144 120 Asia
+
+* Built in variables
+
+[[file:assets/builtin_variables.png]]

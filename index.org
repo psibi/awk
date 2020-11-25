@@ -2,9 +2,21 @@
 
 This contains my notes for the book *The AWK Programming Language* by
 Alfred V. Aho, Brian W. Kernighan and Peter J. Weinberger. The book is
-freely available in [[https://archive.org/details/pdfy-MgN0H1joIoDVoIC7][archive.org]].
+freely available in [[https://archive.org/details/pdfy-MgN0H1joIoDVoIC7][archive.org]]. You can access it [[https://psibi.in/awk][https://psibi.in/awk]]
 
 ** Chapters
+
+- [[file:chapter1.org][An AWK Tutorial]]
+- [[file:chapter2.org][The AWK Language]]
+
+** Static images
+
+- Have images under /docs/assets/
+- Create symbolic of it in the main directory:
+
+#+begin_src sh
+$ ln -s $PWD/docs/assets/ $PWD/assets
+#+end_src
 
 ** Publishing
 
