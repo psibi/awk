@@ -2,7 +2,7 @@
 
 * The Input File countries
 
-#+begin_src sh :exports both
+#+begin_src shell :exports both
 cat countries
 #+end_src
 
@@ -354,7 +354,7 @@ USSR 8649 275 Asia
 
 * User-Defined Functions
 
-#+begin_src 
+#+begin_src awk
 function name(parameter-list) {
   statements
 }

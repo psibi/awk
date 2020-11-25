@@ -9,5 +9,6 @@
                                   :recursive t
                                   :base-extension "org"
                                   :auto-sitemap t
+                                  :html-head-extra "<link  href=\"./main.css\" rel=\"stylesheet\">"
                                   :publishing-function org-twbs-publish-to-html
                                   :publishing-directory "~/github/awk/docs/")))))
