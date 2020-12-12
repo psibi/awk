@@ -66,3 +66,21 @@
 .vi { color: #B8860B } /* Name.Variable.Instance */
 .vm { color: #B8860B } /* Name.Variable.Magic */
 .il { color: #666666 } /* Literal.Number.Integer.Long */
+
+.awk pre span:first-child:after {
+    content: "awk";
+    float: right;
+    color: royalblue;
+}
+
+.shell pre span:first-child:after {
+    content: "bash";
+    float: right;
+    color: royalblue;
+}
+
+.sh pre span:first-child:after {
+    content: "bash";
+    float: right;
+    color: royalblue;
+}
